@@ -5,7 +5,7 @@ import (
 	"github.com/ccqstark/gin_learn/tools"
 )
 
-func main() {
+func main7() {
 
 	db:=tools.GetDB()
 	db.LogMode(true)
