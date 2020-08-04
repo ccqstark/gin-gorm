@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func main() {
+func main8() {
 	db:=tools.GetDB()
 	db.LogMode(true)
 	user:=User{}
