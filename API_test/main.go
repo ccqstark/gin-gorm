@@ -7,59 +7,57 @@ import (
 )
 
 type User struct {
-	ID int  `gorm:"column:id"`
-	Name string  `gorm:"column:name"`
-	Birthday string  `gorm:"column:birthday`
+	ID       int    `gorm:"column:id"`
+	Name     string `gorm:"column:name"`
+	Birthday string `gorm:"column:birthday`
 }
 
 type Person struct {
-	ID int `form:"id"`
+	ID   int    `form:"id"`
 	Name string `form:"name"`
 }
 
 func main() {
-	db:=tools.GetDB()
+	db := tools.GetDB()
 
-	r:=gin.Default()
-	r.Use(CorsMiddleware())
+	r := gin.Default()
+	r.Use(CorsMiddleware()) //使用跨域中间件
 
-	r.GET("/get_test", func(c *gin.Context){
-		c.JSON(http.StatusOK,gin.H{
-			"data":"success",
-			"code":1,
+	r.GET("/get_test", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"data": "success",
+			"code": 1,
 		})
 	})
 
-
-	r.GET("/url/:name/:id",func(c *gin.Context){
+	r.GET("/url/:name/:id", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"name":c.Param("name"),
-			"id":c.Param("id"),
+			"name": c.Param("name"),
+			"id":   c.Param("id"),
 		})
 	})
 
-
-	r.POST("/post_test", func(c *gin.Context){
-		u:=User{}
+	r.POST("/post_test", func(c *gin.Context) {
+		u := User{}
 		db.First(&u)
 		c.JSON(http.StatusOK, gin.H{
-			"id":u.ID,
-			"name":u.Name,
-			"birthday":u.Birthday,
+			"id":       u.ID,
+			"name":     u.Name,
+			"birthday": u.Birthday,
 		})
 	})
 
-	r.GET("get_args",func(c *gin.Context){
-		id:=c.Query("id")
-		code:=c.Query("code")
+	r.GET("get_args", func(c *gin.Context) {
+		id := c.Query("id")
+		code := c.Query("code")
 		c.JSON(http.StatusOK, gin.H{
-			"id":id,
-			"code":code,
+			"id":   id,
+			"code": code,
 		})
 	})
 
-	r.POST("post_args",func(c *gin.Context){
-		firstName :=c.PostForm("first_name")
+	r.POST("post_args", func(c *gin.Context) {
+		firstName := c.PostForm("first_name")
 		lastName := c.PostForm("last_name")
 		c.JSON(http.StatusOK, gin.H{
 			"first_name": firstName,
@@ -67,24 +65,28 @@ func main() {
 		})
 	})
 
-
 	r.POST("/json_request", jsonFunc)
+
+	//r.PUT()
+	//
+	//r.DELETE()
 
 	r.Run()
 }
 
-func jsonFunc(c *gin.Context){
+func jsonFunc(c *gin.Context) {
 	var person Person
-	if err := c.ShouldBind(&person);err != nil{
-		c.String(http.StatusBadRequest,"%v",err)
-	}else {
-		c.JSON(http.StatusOK,gin.H{
-			"id":person.ID,
-			"name":person.Name,
+	if err := c.ShouldBind(&person); err != nil {
+		c.String(http.StatusBadRequest, "%v", err)
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"id":   person.ID,
+			"name": person.Name,
 		})
 	}
 }
 
+//CORS跨域中间件
 func CorsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
